@@ -1,0 +1,186 @@
+<% include partials/_header %>
+
+<body>
+  <h1 class="navbar-brand">Informe de Ventas</h1>
+
+  <div class="container">
+    <div class="row">
+      <!--FORM-->
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-body">
+            <form id="salesForm">
+              <div class="form-group">
+                <label for="startDate">Fecha de inicio:</label>
+                <input class="form-control" type="date" name="startDate" placeholder="Fecha de inicio">
+              </div>
+            
+              <div class="form-group">
+                <label for="endDate">Fecha de fin:</label>
+                <input class="form-control" type="date" name="endDate" placeholder="Fecha de fin">
+              </div>
+            
+              <div class="form-group">
+                <label for="detailLevel">Nivel de detalle:</label>
+                <select class="form-control" name="detailLevel">
+                  <option value="customer">Cliente</option>
+                  <option value="country">País</option>
+                  <option value="provider">Proveedor</option>
+                  <option value="category">Categoría de Producto</option>
+                  <option value="variety">Variedad</option>
+                  <option value="color">Color</option>
+                </select>
+              </div>
+            
+              <div class="form-group">
+                <label for="optionalFields">Campos Opcionales:</label>
+                <input class="form-control" type="checkbox" name="variedadColor" value="true"> Variedad/Color
+                <input class="form-control" type="checkbox" name="countryCategory" value="true"> País/Categoría
+              </div>
+            
+              <div class="form-group">
+                <label for="valueType">Tipo de Valor:</label>
+                <select class="form-control" name="valueType">
+                  <option value="stems">Tallos</option>
+                  <option value="values">Valores</option>
+                </select>
+              </div>
+            
+              <button class="btn btn-dark" type="button" onclick="getSalesData(event)">Obtener Informe</button>
+            </form>
+            
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th>Fecha de inicio</th>
+                <th>Fecha de fin</th>
+                <th>Cliente</th>
+                <th>Pais</th>
+                <th>Producto</th>
+                <th>variedad</th>
+                <th>color</th>
+              </tr>
+            </thead>
+          </table>
+    
+        </div>
+      </div>
+    
+    </div>
+    
+    <script>
+     function getSalesData(event) {
+  event.preventDefault(); // Evita el envío del formulario por defecto
+
+  // Obtener los datos del formulario
+  const form = document.getElementById('salesForm');
+  const formData = new FormData(form);
+
+  // Obtener el valor de detailLevel del formulario
+  const detailLevel = formData.get('detailLevel');
+  let columns = '';
+  
+  // Determinar el nivel de detalle según el valor seleccionado en el formulario
+  switch (detailLevel) {
+    case 'customer':
+      columns = 'customer';
+      break;
+    case 'country':
+      columns = 'country';
+      break;
+    case 'provider':
+      columns = 'provider';
+      break;
+    case 'category':
+      columns = 'category';
+      break;
+    case 'variety':
+      columns = 'variety';
+      break;
+    case 'color':
+      columns = 'color';
+      break;
+    default:
+      console.error('Nivel de detalle no reconocido o no especificado');
+      return; // Detener la ejecución si no se reconoce el nivel de detalle
+  }
+
+  // Verificar opciones seleccionadas de Variedad/Color y País/Categoría
+  const varietyColorSelected = formData.get('variedadColor');
+  const countryCategorySelected = formData.get('countryCategory');
+
+  if (varietyColorSelected === 'true') {
+    // Si Variedad/Color está seleccionado, añadir Categoría
+    columns += ',category';
+  }
+
+  if (countryCategorySelected === 'true') {
+    // Si País/Categoría está seleccionado, añadir País
+    columns += ',country';
+  }
+
+  // Obtener los valores de startDate y endDate del formulario
+  const startDate = formData.get('startDate');
+  const endDate = formData.get('endDate');
+
+  // Construir la URL de la API
+  const apiUrl = `https://apitest.ikbo.co/sales?dateini=${startDate}&datefin=${endDate}&Columns=${columns}`;
+
+  // Realizar la solicitud a la API
+  fetch(apiUrl)
+    .then(response => {
+      if (response.ok) {
+        return response.json(); // Convertir la respuesta a formato JSON
+      }
+      throw new Error('Error al obtener datos de la API.');
+    })
+    .then(data => {
+      console.log('Datos obtenidos:', data);
+      // Actualizar la tabla con los datos obtenidos de la API
+      // Puedes manipular los datos y mostrarlos en la tabla aquí
+      updateTable(data); // Llama a una función para manejar los datos
+    })
+    .catch(error => {
+      console.error(error);
+      // Manejo de errores
+    });
+}
+
+    function updateTable(data) {
+      const tableBody = document.querySelector('tbody');
+      tableBody.innerHTML = ''; // Limpiar la tabla antes de actualizar
+
+      data.forEach(item => {
+        const row = document.createElement('tr');
+
+        // Supongamos que los objetos tienen propiedades como 'fecha', 'cliente', 'pais', 'proveedor', 'categoria', 'variedad', 'color'
+        const columns = ['fecha', 'cliente', 'pais', 'proveedor', 'categoria', 'variedad', 'color'];
+
+        columns.forEach(column => {
+          const cell = document.createElement('td');
+          cell.textContent = item[column]; // Asignar el valor de la propiedad correspondiente a la celda
+          row.appendChild(cell);
+        });
+
+        tableBody.appendChild(row); // Agregar la fila a la tabla
+      });
+    }
+
+
+    </script>
+  </div>
+
+</body>
+
+
+
+

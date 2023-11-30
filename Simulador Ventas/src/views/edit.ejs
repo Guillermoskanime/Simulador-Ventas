@@ -1,0 +1,58 @@
+<% include partials/_header %>
+
+<div class="container">
+  <div class="row">
+    <!--FORM-->
+    <div class="col-md-5 offset-md-3">
+      <div class="card">
+        <div class="card-body">
+          <form action="/edit/<%= task._id %>" method="post">
+
+            <div class="form-group">
+              <input class="form-control" type="Number" name="cisnumber" placeholder="cisnumber" value="<%= task.cisnumber %>">
+            </div>
+            <div class="form-group">
+              <input class="form-control" type="Number" name="account" placeholder="account" value="<%= task.account %>">
+            </div>
+            <div class="form-group">
+              <input class="form-control" type="Number" name="accountMasked" placeholder="accountMasked" value="<%= task.accountMasked %>">
+            </div>
+            <div class="form-group">
+              <input class="form-control" type="text" name="clientName" placeholder="clientName" value="<%= task.clientName %>">
+            </div>
+            <div class="form-group">
+              <input class="form-control" type="Number" name="company" placeholder="company" value="<%= task.company %>">
+            </div>
+            <div class="form-group">
+              <input class="form-control" type="text" name="product" placeholder="product" value="<%= task.product %>">
+            </div>
+            <div class="form-group">
+              <input class="form-control" type="text" name="status" placeholder="status" value="<%= task.status %>">
+            </div>
+            <div class="form-group">
+              <input class="form-control" type="text" name="tokenTdc" placeholder="tokenTdc" value="<%= task.tokenTdc %>">
+            </div>
+            <div class="form-group">
+              <input class="form-control" type="Date" name="updatedAt" placeholder="updatedAt" value="<%= task.updatedAt %>">
+            </div>
+            <div class="form-group">
+              <input class="form-control" type="text" name="uuid" placeholder="uuid" value="<%= task.uuid %>">
+            </div>
+
+            <div class="form-group">
+              <textarea class="form-control" name="description" cols="80"
+                placeholder="Añade una Deescripcion"
+                ><%= task.description %></textarea>
+            </div>
+
+            <button class="btn btn-primary" type="submit">
+              Subir 
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% include partials/_footer%>
